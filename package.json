@@ -39,7 +39,7 @@
     "html2canvas": "^1.0.0-rc.5",
     "json-digger": "^1.1.5",
     "jspdf": "^1.5.3",
-    "rxjs": "^6.5.4"
+    "rxjs": "^6.5.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.0",
