@@ -73,6 +73,11 @@ const ChartContainer = forwardRef(
     const [dataURL, setDataURL] = useState("");
     const [download, setDownload] = useState("");
 
+    useEffect(() => {
+      // when the data source change reset the X and Y scale and position
+      setTransform("matrix(1, 0, 0, 1, 0, 0)");
+    }, [datasource]);
+
     const attachRel = (data, flags) => {
       data.relationship =
         flags + (data.children && data.children.length > 0 ? 1 : 0);
