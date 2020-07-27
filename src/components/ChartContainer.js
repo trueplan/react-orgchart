@@ -336,8 +336,16 @@ const ChartContainer = forwardRef(
             );
           });
       },
-      reCenter,
-      resetScale
+      reCenter: () => {
+        const transformValues = getTransformValues(transform);
+        // only works for 3d charts
+        if(transformValues && transformValues.length === 6) {
+          const transformCenter = `matrix(${transformValues[0]}, ${transformValues[1]}, ${transformValues[2]}, 
+          ${transformValues[3]}, 1, 1)`;
+          setTransform(transformCenter)
+        }
+      },
+      resetScale: () => resetScale()
     }));
 
     return (
