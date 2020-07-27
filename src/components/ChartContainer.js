@@ -250,6 +250,50 @@ const ChartContainer = forwardRef(
       setDS({ ...dsDigger.ds });
     };
 
+    /*
+    * Returns the values of the transform string given, only work with 3D chart.
+    * @param {string} - The transform string with the following format "matrix(1,1,1,1,1,1)".
+    * @returns {array | null} Returns an array with the values or null if the format is not correct
+    * */
+    const getTransformValues = (transformString) => {
+      if(transformString.includes("matrix(")) {
+        return transformString
+            .replace(" ","")
+            .replace("matrix(", "")
+            .replace(")", "")
+            .split(",");
+      }
+      return null;
+    };
+
+    /*
+    * Recenter the chart on the X and Y axis. Only works for 3D charts.
+    * The transform expected format is "matrix(1,1,1,1,1,1)"
+    * */
+    const reCenter = () => {
+      const transformValues = getTransformValues(transform);
+      // only works for 3d charts
+      if(transformValues && transformValues.length === 6) {
+        const transformCenter = `matrix(${transformValues[0]}, ${transformValues[1]}, ${transformValues[2]}, 
+          ${transformValues[3]}, 1, 1)`;
+        setTransform(transformCenter)
+      }
+    };
+
+    /*
+    * Reset the horizontal and vertical scale of the chart. Only works for 3D charts.
+    * The transform expected format is "matrix(1,1,1,1,1,1)"
+    * */
+    const resetScale = () => {
+      const transformValues = getTransformValues(transform);
+      // only works for 3d charts
+      if(transformValues && transformValues.length === 6) {
+        const transformReScale = `matrix(1, ${transformValues[1]}, ${transformValues[2]}, 1, ${transformValues[4]}, 
+          ${transformValues[5]})`;
+        setTransform(transformReScale)
+      }
+    };
+
     useImperativeHandle(ref, () => ({
       exportTo: (exportFilename, exportFileextension) => {
         exportFilename = exportFilename || "OrgChart";
@@ -296,7 +340,9 @@ const ChartContainer = forwardRef(
               "isAncestorsCollapsed"
             );
           });
-      }
+      },
+      reCenter,
+      resetScale
     }));
 
     return (
