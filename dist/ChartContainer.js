@@ -358,7 +358,7 @@ var ChartContainer = (0, _react.forwardRef)(function (_ref, ref) {
   * */
 
 
-  var reCenter = function reCenter() {
+  var _reCenter = function reCenter() {
     var transformValues = getTransformValues(transform); // only works for 3d charts
 
     if (transformValues && transformValues.length === 6) {
@@ -420,12 +420,7 @@ var ChartContainer = (0, _react.forwardRef)(function (_ref, ref) {
         });
       },
       reCenter: function reCenter() {
-        var transformValues = getTransformValues(transform); // only works for 3d charts
-
-        if (transformValues && transformValues.length === 6) {
-          var transformCenter = "matrix(".concat(transformValues[0], ", ").concat(transformValues[1], ", ").concat(transformValues[2], ", \n          ").concat(transformValues[3], ", 1, 1)");
-          setTransform(transformCenter);
-        }
+        return _reCenter();
       },
       resetScale: function resetScale() {
         return _resetScale();
