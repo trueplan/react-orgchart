@@ -131,11 +131,6 @@ var ChartContainer = (0, _react.forwardRef)(function (_ref, ref) {
       download = _useState16[0],
       setDownload = _useState16[1];
 
-  (0, _react.useEffect)(function () {
-    // when the data source change reset the X and Y scale and position
-    setTransform("matrix(1, 0, 0, 1, 0, 0)");
-  }, [datasource]);
-
   var attachRel = function attachRel(data, flags) {
     data.relationship = flags + (data.children && data.children.length > 0 ? 1 : 0);
 
@@ -343,6 +338,48 @@ var ChartContainer = (0, _react.forwardRef)(function (_ref, ref) {
       return _ref2.apply(this, arguments);
     };
   }();
+  /*
+  * Returns the values of the transform string given, only work with 3D chart.
+  * @param {string} - The transform string with the following format "matrix(1,1,1,1,1,1)".
+  * @returns {array | null} Returns an array with the values or null if the format is not correct
+  * */
+
+
+  var getTransformValues = function getTransformValues(transformString) {
+    if (transformString.includes("matrix(")) {
+      return transformString.replace(" ", "").replace("matrix(", "").replace(")", "").split(",");
+    }
+
+    return null;
+  };
+  /*
+  * Recenter the chart on the X and Y axis. Only works for 3D charts.
+  * The transform expected format is "matrix(1,1,1,1,1,1)"
+  * */
+
+
+  var _reCenter = function reCenter() {
+    var transformValues = getTransformValues(transform); // only works for 3d charts
+
+    if (transformValues && transformValues.length === 6) {
+      var transformCenter = "matrix(".concat(transformValues[0], ", ").concat(transformValues[1], ", ").concat(transformValues[2], ", \n          ").concat(transformValues[3], ", 1, 1)");
+      setTransform(transformCenter);
+    }
+  };
+  /*
+  * Reset the horizontal and vertical scale of the chart. Only works for 3D charts.
+  * The transform expected format is "matrix(1,1,1,1,1,1)"
+  * */
+
+
+  var _resetScale = function resetScale() {
+    var transformValues = getTransformValues(transform); // only works for 3d charts
+
+    if (transformValues && transformValues.length === 6) {
+      var transformReScale = "matrix(1, ".concat(transformValues[1], ", ").concat(transformValues[2], ", 1, ").concat(transformValues[4], ", \n          ").concat(transformValues[5], ")");
+      setTransform(transformReScale);
+    }
+  };
 
   (0, _react.useImperativeHandle)(ref, function () {
     return {
@@ -381,6 +418,12 @@ var ChartContainer = (0, _react.forwardRef)(function (_ref, ref) {
         chart.current.querySelectorAll(".oc-node.hidden, .oc-hierarchy.hidden, .isSiblingsCollapsed, .isAncestorsCollapsed").forEach(function (el) {
           el.classList.remove("hidden", "isSiblingsCollapsed", "isAncestorsCollapsed");
         });
+      },
+      reCenter: function reCenter() {
+        return _reCenter();
+      },
+      resetScale: function resetScale() {
+        return _resetScale();
       }
     };
   });
