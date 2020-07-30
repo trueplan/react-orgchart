@@ -246,7 +246,7 @@ const ChartContainer = forwardRef(
     };
 
     /*
-    * Returns the values of the transform string given, only work with 3D chart.
+    * Returns the values of the transform string given, only work with 2D chart.
     * @param {string} - The transform string with the following format "matrix(1,1,1,1,1,1)".
     * @returns {array | null} Returns an array with the values or null if the format is not correct
     * */
@@ -262,7 +262,7 @@ const ChartContainer = forwardRef(
     };
 
     /*
-    * Recenter the chart on the X and Y axis. Only works for 3D charts.
+    * Recenter the chart on the X and Y axis. Only works for 2D charts.
     * The transform expected format is "matrix(1,1,1,1,1,1)"
     * */
     const reCenter = () => {
@@ -270,23 +270,38 @@ const ChartContainer = forwardRef(
       // only works for 3d charts
       if(transformValues && transformValues.length === 6) {
         const transformCenter = `matrix(${transformValues[0]}, ${transformValues[1]}, ${transformValues[2]}, 
-          ${transformValues[3]}, 1, 1)`;
+          ${transformValues[3]}, 0, 0)`;
         setTransform(transformCenter)
       }
     };
 
     /*
-    * Reset the horizontal and vertical scale of the chart. Only works for 3D charts.
+    * Rescale the horizontal and vertical scale of the chart. Only works for 2D charts.
     * The transform expected format is "matrix(1,1,1,1,1,1)"
     * */
-    const resetScale = () => {
+    const reScale = () => {
       const transformValues = getTransformValues(transform);
-      // only works for 3d charts
+      // only works for 2D charts
       if(transformValues && transformValues.length === 6) {
         const transformReScale = `matrix(1, ${transformValues[1]}, ${transformValues[2]}, 1, ${transformValues[4]}, 
           ${transformValues[5]})`;
         setTransform(transformReScale)
       }
+    };
+
+    /*
+    * Recenter and rescale the chart. Only works for 2D charts.
+    * Important: If you wanna recenter and rescale the chart at the same time AVOID using the 'reCenter' and the
+    * 'reScale' functions together because some changes might have NO effect. Instead use this function.
+    * The transform expected format is "matrix(1,1,1,1,1,1)"
+    * */
+    const reCenterAndReScale = () => {
+        const transformValues = getTransformValues(transform);
+        // only works for 2D charts
+        if(transformValues && transformValues.length === 6) {
+            const transformReScale = `matrix(1, ${transformValues[1]}, ${transformValues[2]}, 1, 0, 0)`;
+            setTransform(transformReScale)
+        }
     };
 
     useImperativeHandle(ref, () => ({
@@ -337,7 +352,8 @@ const ChartContainer = forwardRef(
           });
       },
       reCenter: () => reCenter(),
-      resetScale: () => resetScale()
+      reScale: () => reScale(),
+      reCenterAndReScale: () => reCenterAndReScale()
     }));
 
     return (
