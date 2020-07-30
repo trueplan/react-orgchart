@@ -339,7 +339,7 @@ var ChartContainer = (0, _react.forwardRef)(function (_ref, ref) {
     };
   }();
   /*
-  * Returns the values of the transform string given, only work with 3D chart.
+  * Returns the values of the transform string given, only work with 2D chart.
   * @param {string} - The transform string with the following format "matrix(1,1,1,1,1,1)".
   * @returns {array | null} Returns an array with the values or null if the format is not correct
   * */
@@ -353,7 +353,7 @@ var ChartContainer = (0, _react.forwardRef)(function (_ref, ref) {
     return null;
   };
   /*
-  * Recenter the chart on the X and Y axis. Only works for 3D charts.
+  * Recenter the chart on the X and Y axis. Only works for 2D charts.
   * The transform expected format is "matrix(1,1,1,1,1,1)"
   * */
 
@@ -362,21 +362,37 @@ var ChartContainer = (0, _react.forwardRef)(function (_ref, ref) {
     var transformValues = getTransformValues(transform); // only works for 3d charts
 
     if (transformValues && transformValues.length === 6) {
-      var transformCenter = "matrix(".concat(transformValues[0], ", ").concat(transformValues[1], ", ").concat(transformValues[2], ", \n          ").concat(transformValues[3], ", 1, 1)");
+      var transformCenter = "matrix(".concat(transformValues[0], ", ").concat(transformValues[1], ", ").concat(transformValues[2], ", \n          ").concat(transformValues[3], ", 0, 0)");
       setTransform(transformCenter);
     }
   };
   /*
-  * Reset the horizontal and vertical scale of the chart. Only works for 3D charts.
+  * Rescale the horizontal and vertical scale of the chart. Only works for 2D charts.
   * The transform expected format is "matrix(1,1,1,1,1,1)"
   * */
 
 
-  var _resetScale = function resetScale() {
-    var transformValues = getTransformValues(transform); // only works for 3d charts
+  var _reScale = function reScale() {
+    var transformValues = getTransformValues(transform); // only works for 2D charts
 
     if (transformValues && transformValues.length === 6) {
       var transformReScale = "matrix(1, ".concat(transformValues[1], ", ").concat(transformValues[2], ", 1, ").concat(transformValues[4], ", \n          ").concat(transformValues[5], ")");
+      setTransform(transformReScale);
+    }
+  };
+  /*
+  * Recenter and rescale the chart. Only works for 2D charts.
+  * Important: If you wanna recenter and rescale the chart at the same time AVOID using the 'reCenter' and the
+  * 'reScale' functions together because some changes might have NO effect. Instead use this function.
+  * The transform expected format is "matrix(1,1,1,1,1,1)"
+  * */
+
+
+  var _reCenterAndReScale = function reCenterAndReScale() {
+    var transformValues = getTransformValues(transform); // only works for 2D charts
+
+    if (transformValues && transformValues.length === 6) {
+      var transformReScale = "matrix(1, ".concat(transformValues[1], ", ").concat(transformValues[2], ", 1, 0, 0)");
       setTransform(transformReScale);
     }
   };
@@ -422,8 +438,11 @@ var ChartContainer = (0, _react.forwardRef)(function (_ref, ref) {
       reCenter: function reCenter() {
         return _reCenter();
       },
-      resetScale: function resetScale() {
-        return _resetScale();
+      reScale: function reScale() {
+        return _reScale();
+      },
+      reCenterAndReScale: function reCenterAndReScale() {
+        return _reCenterAndReScale();
       }
     };
   });
