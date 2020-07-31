@@ -4,6 +4,7 @@ import { dragNodeService, selectNodeService } from "./service";
 import "./ChartNode.css";
 
 const propTypes = {
+  className: PropTypes.string,
   datasource: PropTypes.object,
   NodeTemplate: PropTypes.elementType,
   draggable: PropTypes.bool,
@@ -20,6 +21,7 @@ const defaultProps = {
 };
 
 const ChartNode = ({
+  className,
   datasource,
   NodeTemplate,
   draggable,
@@ -39,7 +41,7 @@ const ChartNode = ({
   const [selected, setSelected] = useState(false);
 
   const nodeClass = [
-    "oc-node",
+    className,
     isChildrenCollapsed ? "isChildrenCollapsed" : "",
     allowedDrop ? "allowedDrop" : "",
     selected ? "selected" : ""
@@ -323,6 +325,7 @@ const ChartNode = ({
         <ul className={isChildrenCollapsed ? "hidden" : ""}>
           {datasource.children.map(node => (
             <ChartNode
+              className={className}
               datasource={node}
               NodeTemplate={NodeTemplate}
               id={node.id}
