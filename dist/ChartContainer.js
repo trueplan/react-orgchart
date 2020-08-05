@@ -55,6 +55,7 @@ var propTypes = {
   zoominLimit: _propTypes.default.number,
   containerClass: _propTypes.default.string,
   chartClass: _propTypes.default.string,
+  nodeClass: _propTypes.default.string,
   NodeTemplate: _propTypes.default.elementType,
   draggable: _propTypes.default.bool,
   collapsible: _propTypes.default.bool,
@@ -69,6 +70,7 @@ var defaultProps = {
   zoominLimit: 7,
   containerClass: "",
   chartClass: "",
+  nodeClass: "",
   draggable: false,
   collapsible: true,
   multipleSelect: false
@@ -81,6 +83,7 @@ var ChartContainer = (0, _react.forwardRef)(function (_ref, ref) {
       zoominLimit = _ref.zoominLimit,
       containerClass = _ref.containerClass,
       chartClass = _ref.chartClass,
+      nodeClass = _ref.nodeClass,
       NodeTemplate = _ref.NodeTemplate,
       draggable = _ref.draggable,
       collapsible = _ref.collapsible,
@@ -462,6 +465,7 @@ var ChartContainer = (0, _react.forwardRef)(function (_ref, ref) {
     onMouseDown: pan ? panStartHandler : undefined,
     onMouseMove: pan && panning ? panHandler : undefined
   }, _react.default.createElement("ul", null, _react.default.createElement(_ChartNode.default, {
+    className: "oc-node " + nodeClass,
     datasource: attachRel(ds, "00"),
     NodeTemplate: NodeTemplate,
     draggable: draggable,

@@ -44,6 +44,7 @@ function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) ||
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var propTypes = {
+  className: _propTypes.default.string,
   datasource: _propTypes.default.object,
   NodeTemplate: _propTypes.default.elementType,
   draggable: _propTypes.default.bool,
@@ -59,7 +60,8 @@ var defaultProps = {
 };
 
 var ChartNode = function ChartNode(_ref) {
-  var datasource = _ref.datasource,
+  var className = _ref.className,
+      datasource = _ref.datasource,
       NodeTemplate = _ref.NodeTemplate,
       draggable = _ref.draggable,
       collapsible = _ref.collapsible,
@@ -103,7 +105,7 @@ var ChartNode = function ChartNode(_ref) {
       selected = _useState14[0],
       setSelected = _useState14[1];
 
-  var nodeClass = ["oc-node", isChildrenCollapsed ? "isChildrenCollapsed" : "", allowedDrop ? "allowedDrop" : "", selected ? "selected" : ""].filter(function (item) {
+  var nodeClass = [className, isChildrenCollapsed ? "isChildrenCollapsed" : "", allowedDrop ? "allowedDrop" : "", selected ? "selected" : ""].filter(function (item) {
     return item;
   }).join(" ");
   (0, _react.useEffect)(function () {
@@ -321,6 +323,7 @@ var ChartNode = function ChartNode(_ref) {
     className: isChildrenCollapsed ? "hidden" : ""
   }, datasource.children.map(function (node) {
     return _react.default.createElement(ChartNode, {
+      className: className,
       datasource: node,
       NodeTemplate: NodeTemplate,
       id: node.id,

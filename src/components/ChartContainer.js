@@ -21,6 +21,7 @@ const propTypes = {
   zoominLimit: PropTypes.number,
   containerClass: PropTypes.string,
   chartClass: PropTypes.string,
+  nodeClass: PropTypes.string,
   NodeTemplate: PropTypes.elementType,
   draggable: PropTypes.bool,
   collapsible: PropTypes.bool,
@@ -36,6 +37,7 @@ const defaultProps = {
   zoominLimit: 7,
   containerClass: "",
   chartClass: "",
+  nodeClass: "",
   draggable: false,
   collapsible: true,
   multipleSelect: false
@@ -51,6 +53,7 @@ const ChartContainer = forwardRef(
       zoominLimit,
       containerClass,
       chartClass,
+      nodeClass,
       NodeTemplate,
       draggable,
       collapsible,
@@ -373,6 +376,7 @@ const ChartContainer = forwardRef(
         >
           <ul>
             <ChartNode
+              className={"oc-node " + nodeClass}
               datasource={attachRel(ds, "00")}
               NodeTemplate={NodeTemplate}
               draggable={draggable}

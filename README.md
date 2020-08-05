@@ -38,6 +38,12 @@
       <td>Add an optional extra class name to .orgchart-container It could end up looking like class="orgchart-container xxx yyy".</td>
     </tr>
     <tr>
+      <td>nodeClass</td>
+      <td>string</td>
+      <td></td>
+      <td>Add an optional extra class name to .oc-node It could end up looking like class="oc-node xxx yyy".</td>
+    </tr>
+    <tr>
       <td>collapsible</td>
       <td>boolean</td>
       <td>true</td>
@@ -122,6 +128,18 @@
     <tr>
       <td>expandAllNodes</td>
       <td>User can use this method to export orgchart to png org pdf file. Sample code: orgchartRef.current.exportTo(filename, fileextension)</td>
+    </tr>
+    <tr>
+      <td>reCenter</td>
+      <td>User can use this method to recenter the chart (set the matrix position to X=0 and Y=0). Sample code: orgchartRef.current.reCenter()</td>
+    </tr>
+    <tr>
+      <td>reScale</td>
+      <td>User can use this method to rescale the chart (set x an y scale to 1). Sample code: orgchartRef.current.reScale()</td>
+    </tr>
+    <tr>
+      <td>reCenterAndReScale</td>
+      <td>User can use this method to recenter and rescale the chart at the same time. Important: AVOID using the 'reCenter' and the 'reScale' functions together because some changes might have NO effect, instead use this function. Sample code: orgchartRef.current.reCenterAndReScale()</td>
     </tr>
   </tbody>
 </table>
