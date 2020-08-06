@@ -367,6 +367,7 @@ const ChartContainer = forwardRef(
         onMouseDown={pan ? panStartHandler : undefined}
         onMouseUp={pan && panning ? panEndHandler : undefined}
         onMouseMove={pan && panning ? panHandler : undefined}
+        style={{cursor: cursor}}
       >
         <div
           ref={chart}
