@@ -311,10 +311,18 @@ const ChartContainer = forwardRef(
       if(nodeRelativePosition) {
         // the y position is set to be on the top of the orgChart
         const newYValue = - nodeRelativePosition.top;
-        // we calculate the x position of orgChart middle
-        const chartXMiddlePosition = (nodeRelativePosition.left + (- nodeRelativePosition.right)) / 2;
-        // the x position is set to be on the middle of the orgChart
-        const newXValue = chartXMiddlePosition - nodeRelativePosition.left;
+
+        // we calculate the x position of orgChart to be in the middle
+
+        // If the 'orgchart' is bigger than the 'orgchart-container' use the width of the 'orgchart-container' 
+        // because the width of this component changes when screen width changes.
+        const orgChartContainerIsBigger = document.getElementById('orgchart-container').offsetWidth >
+            document.getElementById('orgchart').offsetWidth;
+        const absoluteContainerName = orgChartContainerIsBigger ? "orgchart" : "orgchart-container";
+        const nodeWidth = document.getElementById(nodeId).getBoundingClientRect().width;
+
+        const newXValue = (document.getElementById(absoluteContainerName).offsetWidth) / 2 -
+            (nodeRelativePosition.left + (nodeWidth / 2));
 
         updateTransformMatrix(newXValue, newYValue);
       }
