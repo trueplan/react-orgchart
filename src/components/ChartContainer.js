@@ -249,6 +249,31 @@ const ChartContainer = forwardRef(
     };
 
     /*
+    * This function updates (or create a new) transform matrix with the xPosition and the yPosition given.
+    * Note: this only works for 2D charts
+    * @params {number} - xPosition = the new x position, if undefined is passed the x position will not change
+    * @params {number} - yPosition = the new y position, if undefined is passed the y position will not change
+    * */
+    const updateTransformMatrix = (xPosition = undefined, yPosition = undefined) => {
+      // get the current transform values
+      const transformValues = getTransformValues(transform);
+
+      // if the org chart has being already move, the transform matrix should exist
+      if(transformValues && transformValues.length === 6) {
+        // updates the x position and/or the y position
+        const newTransform = `matrix(${transformValues[0]}, ${transformValues[1]}, ${transformValues[2]}, 
+          ${transformValues[3]}, ${xPosition || transformValues[4]}, ${yPosition || transformValues[5]})`;
+
+        setTransform(newTransform);
+      }
+      // if the org chart hasn't been move yet, we create a new transform matrix
+      else {
+        const transformCenter = `matrix(1, 0, 0, 1, ${xPosition || 0}, ${yPosition || 0})`;
+        setTransform(transformCenter);
+      }
+    };
+
+    /*
     * Returns the relative position (to the parent) of a child.
     * @param {string} childId = The id of the child.
     * @param {string} parentId = The id of the parent.
@@ -282,22 +307,10 @@ const ChartContainer = forwardRef(
       const chartRelativePosition = getChildRelativePosition("orgchart", "orgchart-container");
 
       if(nodeRelativePosition) {
+        // the y position is set to be on the top of the orgChart
+        const newYValue = - nodeRelativePosition.top;
 
-        const newYValue = - nodeRelativePosition.top; // the new Y value to set on transform
-        const transformValues = getTransformValues(transform); // get the current transform values
-
-        // if the org chart has been already move
-        if(transformValues && transformValues.length === 6) {
-          const transformCenter = `matrix(${transformValues[0]}, ${transformValues[1]}, ${transformValues[2]}, 
-          ${transformValues[3]}, ${transformValues[4]}, ${newYValue})`;
-
-          setTransform(transformCenter);
-        }
-        // if the org chart hasn't been move yet
-        else {
-          const transformCenter = `matrix(1, 0, 0, 1, 0, ${newYValue})`;
-          setTransform(transformCenter);
-        }
+        updateTransformMatrix(undefined, newYValue);
       }
     };
 
