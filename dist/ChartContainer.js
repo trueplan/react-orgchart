@@ -405,11 +405,14 @@ var ChartContainer = (0, _react.forwardRef)(function (_ref, ref) {
 
     if (nodeRelativePosition) {
       // the y position is set to be on the top of the orgChart
-      var newYValue = -nodeRelativePosition.top; // we calculate the x position of orgChart middle
+      var newYValue = -nodeRelativePosition.top; // we calculate the x position of orgChart to be in the middle
+      // If the 'orgchart' is bigger than the 'orgchart-container' use the width of the 'orgchart-container' 
+      // because the width of this component changes when screen width changes.
 
-      var chartXMiddlePosition = (nodeRelativePosition.left + -nodeRelativePosition.right) / 2; // the x position is set to be on the middle of the orgChart
-
-      var newXValue = chartXMiddlePosition - nodeRelativePosition.left;
+      var orgChartContainerIsBigger = document.getElementById('orgchart-container').offsetWidth > document.getElementById('orgchart').offsetWidth;
+      var absoluteContainerName = orgChartContainerIsBigger ? "orgchart" : "orgchart-container";
+      var nodeWidth = document.getElementById(nodeId).getBoundingClientRect().width;
+      var newXValue = document.getElementById(absoluteContainerName).offsetWidth / 2 - (nodeRelativePosition.left + nodeWidth / 2);
       updateTransformMatrix(newXValue, newYValue);
     }
   };
