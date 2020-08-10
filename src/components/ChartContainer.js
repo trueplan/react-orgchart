@@ -408,7 +408,8 @@ const ChartContainer = forwardRef(
       },
       reCenter: () => reCenter(),
       reScale: () => reScale(),
-      reCenterAndReScale: () => reCenterAndReScale()
+      reCenterAndReScale: () => reCenterAndReScale(),
+      centerNode: (nodeId) => centerNode(nodeId)
     }));
 
     return (
