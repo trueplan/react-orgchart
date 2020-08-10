@@ -89,7 +89,8 @@ var ChartContainer = (0, _react.forwardRef)(function (_ref, ref) {
       collapsible = _ref.collapsible,
       multipleSelect = _ref.multipleSelect,
       onClickNode = _ref.onClickNode,
-      onClickChart = _ref.onClickChart;
+      onClickChart = _ref.onClickChart,
+      nodeIdToCenter = _ref.nodeIdToCenter;
   var container = (0, _react.useRef)();
   var chart = (0, _react.useRef)();
   var downloadButton = (0, _react.useRef)();
@@ -153,7 +154,8 @@ var ChartContainer = (0, _react.forwardRef)(function (_ref, ref) {
 
   (0, _react.useEffect)(function () {
     setDS(datasource);
-  }, [datasource]);
+    if (nodeIdToCenter) _centerNode(nodeIdToCenter);
+  }, [datasource, nodeIdToCenter]);
   var dsDigger = new _jsonDigger.default(datasource, "id", "children");
 
   var clickChartHandler = function clickChartHandler(event) {
