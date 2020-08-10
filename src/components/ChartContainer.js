@@ -253,22 +253,24 @@ const ChartContainer = forwardRef(
     * Note: this only works for 2D charts
     * @params {number} - xPosition = the new x position, if undefined is passed the x position will not change
     * @params {number} - yPosition = the new y position, if undefined is passed the y position will not change
+    * @params {number} - xScale = the new x scale, if undefined is passed the x scale will not change
+    * @params {number} - yScale = the new y scale, if undefined is passed the y scale will not change
     * */
-    const updateTransformMatrix = (xPosition = undefined, yPosition = undefined) => {
+    const updateTransformMatrix = (xPosition = undefined, yPosition = undefined, xScale = undefined, yScale = undefined) => {
       // get the current transform values
       const transformValues = getTransformValues(transform);
 
       // if the org chart has being already move, the transform matrix should exist
       if(transformValues && transformValues.length === 6) {
-        // updates the x position and/or the y position
-        const newTransform = `matrix(${transformValues[0]}, ${transformValues[1]}, ${transformValues[2]}, 
-          ${transformValues[3]}, ${xPosition || transformValues[4]}, ${yPosition || transformValues[5]})`;
+        // updates the x,y position and/or the x,y scale
+        const newTransform = `matrix(${xScale || transformValues[0]}, ${transformValues[1]}, ${transformValues[2]}, 
+          ${yScale || transformValues[3]}, ${xPosition || transformValues[4]}, ${yPosition || transformValues[5]})`;
 
         setTransform(newTransform);
       }
       // if the org chart hasn't been move yet, we create a new transform matrix
       else {
-        const transformCenter = `matrix(1, 0, 0, 1, ${xPosition || 0}, ${yPosition || 0})`;
+        const transformCenter = `matrix(${xScale || 1}, 0, 0, ${yScale || 1}, ${xPosition || 0}, ${yPosition || 0})`;
         setTransform(transformCenter);
       }
     };
@@ -336,45 +338,25 @@ const ChartContainer = forwardRef(
 
     /*
     * Recenter the chart on the X and Y axis. Only works for 2D charts.
-    * The transform expected format is "matrix(1,1,1,1,1,1)"
     * */
     const reCenter = () => {
-      const transformValues = getTransformValues(transform);
-      // only works for 3d charts
-      if(transformValues && transformValues.length === 6) {
-        const transformCenter = `matrix(${transformValues[0]}, ${transformValues[1]}, ${transformValues[2]}, 
-          ${transformValues[3]}, 0, 0)`;
-        setTransform(transformCenter)
-      }
+      updateTransformMatrix(0,0);
     };
 
     /*
     * Rescale the horizontal and vertical scale of the chart. Only works for 2D charts.
-    * The transform expected format is "matrix(1,1,1,1,1,1)"
     * */
     const reScale = () => {
-      const transformValues = getTransformValues(transform);
-      // only works for 2D charts
-      if(transformValues && transformValues.length === 6) {
-        const transformReScale = `matrix(1, ${transformValues[1]}, ${transformValues[2]}, 1, ${transformValues[4]}, 
-          ${transformValues[5]})`;
-        setTransform(transformReScale)
-      }
+      updateTransformMatrix(undefined, undefined, 1, 1);
     };
 
     /*
     * Recenter and rescale the chart. Only works for 2D charts.
     * Important: If you wanna recenter and rescale the chart at the same time AVOID using the 'reCenter' and the
     * 'reScale' functions together because some changes might have NO effect. Instead use this function.
-    * The transform expected format is "matrix(1,1,1,1,1,1)"
     * */
     const reCenterAndReScale = () => {
-        const transformValues = getTransformValues(transform);
-        // only works for 2D charts
-        if(transformValues && transformValues.length === 6) {
-            const transformReScale = `matrix(1, ${transformValues[1]}, ${transformValues[2]}, 1, 0, 0)`;
-            setTransform(transformReScale)
-        }
+        updateTransformMatrix(0, 0, 1, 1);
     };
 
     useImperativeHandle(ref, () => ({
