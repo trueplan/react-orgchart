@@ -298,25 +298,29 @@ const ChartContainer = forwardRef(
       return null;
     };
 
-    // todo finish this
+    /*
+    * This function center a particular given node, to be on the TOP-CENTER of the orgChart.
+    * @param {string} nodeId = The id of the node to be centered
+    * */
     const centerNode = (nodeId) => {
-      // the relative position of the node to the orgchart
+      // the relative position of the node to the orgChart
       const nodeRelativePosition = getChildRelativePosition(nodeId, "orgchart");
-
-      // the relative position of the orgchart to the orgchart-container
-      const chartRelativePosition = getChildRelativePosition("orgchart", "orgchart-container");
 
       if(nodeRelativePosition) {
         // the y position is set to be on the top of the orgChart
         const newYValue = - nodeRelativePosition.top;
+        // we calculate the x position of orgChart middle
+        const chartXMiddlePosition = (nodeRelativePosition.left + (- nodeRelativePosition.right)) / 2;
+        // the x position is set to be on the middle of the orgChart
+        const newXValue = chartXMiddlePosition - nodeRelativePosition.left;
 
-        updateTransformMatrix(undefined, newYValue);
+        updateTransformMatrix(newXValue, newYValue);
       }
     };
 
     /*
     * Returns the values of the transform string given, only work with 2D chart.
-    * @param {string} - The transform string with the following format "matrix(1,1,1,1,1,1)".
+    * @param {string} The transform string with the following format "matrix(1,1,1,1,1,1)".
     * @returns {array | null} Returns an array with the values or null if the format is not correct
     * */
     const getTransformValues = (transformString) => {
