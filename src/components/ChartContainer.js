@@ -249,6 +249,59 @@ const ChartContainer = forwardRef(
     };
 
     /*
+    * Returns the relative position (to the parent) of a child.
+    * @param {string} childId = The id of the child.
+    * @param {string} parentId = The id of the parent.
+    * @return {object | null} An object with the format {top: 0, right: 0, bottom: 0, left: 0} of null if
+    * the parent or the child were not found
+    * */
+    const getChildRelativePosition = (childId, parentId) => {
+      let parentPosition = document.getElementById(parentId).getBoundingClientRect();
+      let childPosition = document.getElementById(childId).getBoundingClientRect();
+
+      let relativePosition = {};
+
+      if(parentPosition && childPosition) {
+        relativePosition.top = childPosition.top - parentPosition.top;
+        relativePosition.right = childPosition.right - parentPosition.right;
+        relativePosition.bottom = childPosition.bottom - parentPosition.bottom;
+        relativePosition.left = childPosition.left - parentPosition.left;
+
+        return relativePosition;
+      }
+
+      return null;
+    };
+
+    // todo finish this
+    const centerNode = (nodeId) => {
+      // the relative position of the node to the orgchart
+      const nodeRelativePosition = getChildRelativePosition(nodeId, "orgchart");
+
+      // the relative position of the orgchart to the orgchart-container
+      const chartRelativePosition = getChildRelativePosition("orgchart", "orgchart-container");
+
+      if(nodeRelativePosition) {
+
+        const newYValue = - nodeRelativePosition.top; // the new Y value to set on transform
+        const transformValues = getTransformValues(transform); // get the current transform values
+
+        // if the org chart has been already move
+        if(transformValues && transformValues.length === 6) {
+          const transformCenter = `matrix(${transformValues[0]}, ${transformValues[1]}, ${transformValues[2]}, 
+          ${transformValues[3]}, ${transformValues[4]}, ${newYValue})`;
+
+          setTransform(transformCenter);
+        }
+        // if the org chart hasn't been move yet
+        else {
+          const transformCenter = `matrix(1, 0, 0, 1, 0, ${newYValue})`;
+          setTransform(transformCenter);
+        }
+      }
+    };
+
+    /*
     * Returns the values of the transform string given, only work with 2D chart.
     * @param {string} - The transform string with the following format "matrix(1,1,1,1,1,1)".
     * @returns {array | null} Returns an array with the values or null if the format is not correct
@@ -361,12 +414,14 @@ const ChartContainer = forwardRef(
 
     return (
       <div
+        id={'orgchart-container'}
         ref={container}
         className={"orgchart-container " + containerClass}
         onWheel={zoom ? zoomHandler : undefined}
         onMouseUp={pan && panning ? panEndHandler : undefined}
       >
         <div
+          id={'orgchart'}
           ref={chart}
           className={"orgchart " + chartClass}
           style={{ transform: transform, cursor: cursor }}
