@@ -59,8 +59,7 @@ const ChartContainer = forwardRef(
       collapsible,
       multipleSelect,
       onClickNode,
-      onClickChart,
-      nodeIdToCenter
+      onClickChart
     },
     ref
   ) => {
@@ -91,8 +90,7 @@ const ChartContainer = forwardRef(
     const [ds, setDS] = useState(datasource);
     useEffect(() => {
       setDS(datasource);
-      if(nodeIdToCenter) centerNode(nodeIdToCenter)
-    }, [datasource, nodeIdToCenter]);
+    }, [datasource]);
 
     const dsDigger = new JSONDigger(datasource, "id", "children");
 
