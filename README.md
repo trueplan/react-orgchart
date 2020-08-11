@@ -141,6 +141,10 @@
       <td>reCenterAndReScale</td>
       <td>User can use this method to recenter and rescale the chart at the same time. Important: AVOID using the 'reCenter' and the 'reScale' functions together because some changes might have NO effect, instead use this function. Sample code: orgchartRef.current.reCenterAndReScale()</td>
     </tr>
+    <tr>
+      <td>centerNode</td>
+      <td>User can use this method to center a particular node by the node id. Sample code: orgchartRef.current.centerNode("node_id_1")</td>
+    </tr>
   </tbody>
 </table>
 

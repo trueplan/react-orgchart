@@ -249,8 +249,88 @@ const ChartContainer = forwardRef(
     };
 
     /*
+    * This function updates (or create a new) transform matrix with the xPosition and the yPosition given.
+    * Note: this only works for 2D charts
+    * @params {number} - xPosition = the new x position, if undefined is passed the x position will not change
+    * @params {number} - yPosition = the new y position, if undefined is passed the y position will not change
+    * @params {number} - xScale = the new x scale, if undefined is passed the x scale will not change
+    * @params {number} - yScale = the new y scale, if undefined is passed the y scale will not change
+    * */
+    const updateTransformMatrix = (xPosition = undefined, yPosition = undefined, xScale = undefined, yScale = undefined) => {
+      // get the current transform values
+      const transformValues = getTransformValues(transform);
+
+      // if the org chart has being already move, the transform matrix should exist
+      if(transformValues && transformValues.length === 6) {
+        // updates the x,y position and/or the x,y scale
+        const newTransform = `matrix(${xScale || transformValues[0]}, ${transformValues[1]}, ${transformValues[2]}, 
+          ${yScale || transformValues[3]}, ${xPosition || transformValues[4]}, ${yPosition || transformValues[5]})`;
+
+        setTransform(newTransform);
+      }
+      // if the org chart hasn't been move yet, we create a new transform matrix
+      else {
+        const transformCenter = `matrix(${xScale || 1}, 0, 0, ${yScale || 1}, ${xPosition || 0}, ${yPosition || 0})`;
+        setTransform(transformCenter);
+      }
+    };
+
+    /*
+    * Returns the relative position (to the parent) of a child.
+    * @param {string} childId = The id of the child.
+    * @param {string} parentId = The id of the parent.
+    * @return {object | null} An object with the format {top: 0, right: 0, bottom: 0, left: 0} of null if
+    * the parent or the child were not found
+    * */
+    const getChildRelativePosition = (childId, parentId) => {
+      let parentPosition = document.getElementById(parentId).getBoundingClientRect();
+      let childPosition = document.getElementById(childId).getBoundingClientRect();
+
+      let relativePosition = {};
+
+      if(parentPosition && childPosition) {
+        relativePosition.top = childPosition.top - parentPosition.top;
+        relativePosition.right = childPosition.right - parentPosition.right;
+        relativePosition.bottom = childPosition.bottom - parentPosition.bottom;
+        relativePosition.left = childPosition.left - parentPosition.left;
+
+        return relativePosition;
+      }
+
+      return null;
+    };
+
+    /*
+    * This function center a particular given node, to be on the TOP-CENTER of the orgChart.
+    * @param {string} nodeId = The id of the node to be centered
+    * */
+    const centerNode = (nodeId) => {
+      // the relative position of the node to the orgChart
+      const nodeRelativePosition = getChildRelativePosition(nodeId, "orgchart");
+
+      if(nodeRelativePosition) {
+        // the y position is set to be on the top of the orgChart
+        const newYValue = - nodeRelativePosition.top;
+
+        // we calculate the x position of orgChart to be in the middle
+
+        // If the 'orgchart' is bigger than the 'orgchart-container' use the width of the 'orgchart-container' 
+        // because the width of this component changes when screen width changes.
+        const orgChartContainerIsBigger = document.getElementById('orgchart-container').offsetWidth >
+            document.getElementById('orgchart').offsetWidth;
+        const absoluteContainerName = orgChartContainerIsBigger ? "orgchart" : "orgchart-container";
+        const nodeWidth = document.getElementById(nodeId).getBoundingClientRect().width;
+
+        const newXValue = (document.getElementById(absoluteContainerName).offsetWidth) / 2 -
+            (nodeRelativePosition.left + (nodeWidth / 2));
+
+        updateTransformMatrix(newXValue, newYValue);
+      }
+    };
+
+    /*
     * Returns the values of the transform string given, only work with 2D chart.
-    * @param {string} - The transform string with the following format "matrix(1,1,1,1,1,1)".
+    * @param {string} The transform string with the following format "matrix(1,1,1,1,1,1)".
     * @returns {array | null} Returns an array with the values or null if the format is not correct
     * */
     const getTransformValues = (transformString) => {
@@ -266,45 +346,25 @@ const ChartContainer = forwardRef(
 
     /*
     * Recenter the chart on the X and Y axis. Only works for 2D charts.
-    * The transform expected format is "matrix(1,1,1,1,1,1)"
     * */
     const reCenter = () => {
-      const transformValues = getTransformValues(transform);
-      // only works for 3d charts
-      if(transformValues && transformValues.length === 6) {
-        const transformCenter = `matrix(${transformValues[0]}, ${transformValues[1]}, ${transformValues[2]}, 
-          ${transformValues[3]}, 0, 0)`;
-        setTransform(transformCenter)
-      }
+      updateTransformMatrix(0,0);
     };
 
     /*
     * Rescale the horizontal and vertical scale of the chart. Only works for 2D charts.
-    * The transform expected format is "matrix(1,1,1,1,1,1)"
     * */
     const reScale = () => {
-      const transformValues = getTransformValues(transform);
-      // only works for 2D charts
-      if(transformValues && transformValues.length === 6) {
-        const transformReScale = `matrix(1, ${transformValues[1]}, ${transformValues[2]}, 1, ${transformValues[4]}, 
-          ${transformValues[5]})`;
-        setTransform(transformReScale)
-      }
+      updateTransformMatrix(undefined, undefined, 1, 1);
     };
 
     /*
     * Recenter and rescale the chart. Only works for 2D charts.
     * Important: If you wanna recenter and rescale the chart at the same time AVOID using the 'reCenter' and the
     * 'reScale' functions together because some changes might have NO effect. Instead use this function.
-    * The transform expected format is "matrix(1,1,1,1,1,1)"
     * */
     const reCenterAndReScale = () => {
-        const transformValues = getTransformValues(transform);
-        // only works for 2D charts
-        if(transformValues && transformValues.length === 6) {
-            const transformReScale = `matrix(1, ${transformValues[1]}, ${transformValues[2]}, 1, 0, 0)`;
-            setTransform(transformReScale)
-        }
+        updateTransformMatrix(0, 0, 1, 1);
     };
 
     useImperativeHandle(ref, () => ({
@@ -356,11 +416,13 @@ const ChartContainer = forwardRef(
       },
       reCenter: () => reCenter(),
       reScale: () => reScale(),
-      reCenterAndReScale: () => reCenterAndReScale()
+      reCenterAndReScale: () => reCenterAndReScale(),
+      centerNode: (nodeId) => centerNode(nodeId)
     }));
 
     return (
       <div
+        id={'orgchart-container'}
         ref={container}
         className={"orgchart-container " + containerClass}
         onWheel={zoom ? zoomHandler : undefined}
@@ -370,6 +432,7 @@ const ChartContainer = forwardRef(
         style={{cursor: cursor}}
       >
         <div
+          id={'orgchart'}
           ref={chart}
           className={"orgchart " + chartClass}
           style={{ transform: transform, cursor: cursor }}
