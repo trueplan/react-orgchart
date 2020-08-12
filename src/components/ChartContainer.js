@@ -324,7 +324,7 @@ const ChartContainer = forwardRef(
         const newXValue = (document.getElementById(absoluteContainerName).offsetWidth) / 2 -
             (nodeRelativePosition.left + (nodeWidth / 2));
 
-        updateTransformMatrix(newXValue, newYValue);
+        updateTransformMatrix(newXValue, newYValue, 1,1);
       }
     };
 

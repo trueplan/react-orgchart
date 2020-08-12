@@ -413,7 +413,7 @@ var ChartContainer = (0, _react.forwardRef)(function (_ref, ref) {
       var absoluteContainerName = orgChartContainerIsBigger ? "orgchart" : "orgchart-container";
       var nodeWidth = document.getElementById(nodeId).getBoundingClientRect().width;
       var newXValue = document.getElementById(absoluteContainerName).offsetWidth / 2 - (nodeRelativePosition.left + nodeWidth / 2);
-      updateTransformMatrix(newXValue, newYValue);
+      updateTransformMatrix(newXValue, newYValue, 1, 1);
     }
   };
   /*
