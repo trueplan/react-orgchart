@@ -252,6 +252,7 @@ const ChartNode = ({
         onMouseEnter={addArrows}
         onMouseLeave={removeArrows}
       >
+        {datasource.relationship}
         {NodeTemplate ? (
           <NodeTemplate nodeData={datasource} />
         ) : (
@@ -280,63 +281,57 @@ const ChartNode = ({
               onClick={topEdgeClickHandler}
             />
           )}
-        {collapsible &&
-          datasource.relationship &&
-          datasource.relationship.charAt(1) === "1" && (
-            <>
-              <i
-                className={`oc-edge horizontalEdge rightEdge oci ${
-                  rightEdgeExpanded === undefined
-                    ? ""
-                    : rightEdgeExpanded
-                    ? "oci-chevron-left"
-                    : "oci-chevron-right"
-                }`}
-                onClick={hEdgeClickHandler}
-              />
-              <i
-                className={`oc-edge horizontalEdge leftEdge oci ${
-                  leftEdgeExpanded === undefined
-                    ? ""
-                    : leftEdgeExpanded
-                    ? "oci-chevron-right"
-                    : "oci-chevron-left"
-                }`}
-                onClick={hEdgeClickHandler}
-              />
-            </>
-          )}
+        {/*{collapsible &&*/}
+        {/*  datasource.relationship &&*/}
+        {/*  datasource.relationship.charAt(1) === "1" && (*/}
+        {/*    <>*/}
+        {/*      <i*/}
+        {/*        className={`oc-edge horizontalEdge rightEdge oci ${*/}
+        {/*          rightEdgeExpanded === undefined*/}
+        {/*            ? ""*/}
+        {/*            : rightEdgeExpanded*/}
+        {/*            ? "oci-chevron-left"*/}
+        {/*            : "oci-chevron-right"*/}
+        {/*        }`}*/}
+        {/*        onClick={hEdgeClickHandler}*/}
+        {/*      />*/}
+        {/*      <i*/}
+        {/*        className={`oc-edge horizontalEdge leftEdge oci ${*/}
+        {/*          leftEdgeExpanded === undefined*/}
+        {/*            ? ""*/}
+        {/*            : leftEdgeExpanded*/}
+        {/*            ? "oci-chevron-right"*/}
+        {/*            : "oci-chevron-left"*/}
+        {/*        }`}*/}
+        {/*        onClick={hEdgeClickHandler}*/}
+        {/*      />*/}
+        {/*    </>*/}
+        {/*  )}*/}
         {collapsible &&
           datasource.relationship &&
           datasource.relationship.charAt(2) === "1" && (
             <i
-              className={`oc-edge verticalEdge bottomEdge oci ${
-                bottomEdgeExpanded === undefined
-                  ? ""
-                  : bottomEdgeExpanded
-                  ? "oci-chevron-up"
-                  : "oci-chevron-down"
-              }`}
+              className={"material-icons"}
               onClick={bottomEdgeClickHandler}
-            />
+            >arrow_circle_down</i>
           )}
       </div>
       {datasource.children && datasource.children.length > 0 && (
-        <ul className={isChildrenCollapsed ? "hidden" : ""}>
+        <ul className={isChildrenCollapsed || (parseInt(datasource.relationship.charAt(0)) > 0) ? "hidden" : ""} style={{border: "solid 1px red"}}>
           {datasource.children.map(node => (
             <ChartNode
-              className={className}
-              datasource={node}
-              NodeTemplate={NodeTemplate}
-              id={node.id}
-              key={node.id}
-              draggable={draggable}
-              collapsible={collapsible}
-              multipleSelect={multipleSelect}
-              changeHierarchy={changeHierarchy}
-              onClickNode={onClickNode}
+                className={className}
+                datasource={node}
+                NodeTemplate={NodeTemplate}
+                id={node.id}
+                key={node.id}
+                draggable={draggable}
+                collapsible={collapsible}
+                multipleSelect={multipleSelect}
+                changeHierarchy={changeHierarchy}
+                onClickNode={onClickNode}
             />
-          ))}
+        ))}
         </ul>
       )}
     </li>

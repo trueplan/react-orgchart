@@ -80,8 +80,8 @@ const ChartContainer = forwardRef(
       data.relationship =
         flags + (data.children && data.children.length > 0 ? 1 : 0);
       if (data.children) {
-        data.children.forEach(function(item) {
-          attachRel(item, "1" + (data.children.length > 1 ? 1 : 0));
+        data.children.forEach((item) => {
+          attachRel(item, (parseInt(flags.charAt(0)) + 1).toString() + (data.children.length > 1 ? 1 : 0));
         });
       }
       return data;
@@ -377,7 +377,7 @@ const ChartContainer = forwardRef(
         >
           <ul>
             <ChartNode
-              className={"oc-node " + nodeClass}
+              className={"oc-node " + nodeClass + "my-ceo"}
               datasource={attachRel(ds, "00")}
               NodeTemplate={NodeTemplate}
               draggable={draggable}
