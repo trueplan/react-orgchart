@@ -307,6 +307,10 @@ const ChartContainer = forwardRef(
         }
     };
 
+    const handleCollapseExpandChildren = (element) => {
+      console.log(element)
+    }
+
     useImperativeHandle(ref, () => ({
       exportTo: (exportFilename, exportFileextension) => {
         exportFilename = exportFilename || "OrgChart";

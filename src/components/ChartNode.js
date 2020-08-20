@@ -28,6 +28,7 @@ const ChartNode = ({
   collapsible,
   multipleSelect,
   changeHierarchy,
+  onCollapseExpandChildren,
   onClickNode
 }) => {
   const node = useRef();
@@ -86,6 +87,14 @@ const ChartNode = ({
       subs2.unsubscribe();
     };
   }, [multipleSelect, datasource]);
+
+  const handleCollapse = (
+      (receivedData) => {
+        debugger
+        console.log("data", datasource)
+        console.log("data", receivedData)
+      }
+  )
 
   const addArrows = e => {
     const node = e.target.closest("li");
@@ -152,6 +161,7 @@ const ChartNode = ({
 
   const bottomEdgeClickHandler = e => {
     e.stopPropagation();
+    onCollapseExpandChildren(datasource)
     setIsChildrenCollapsed(!isChildrenCollapsed);
     setBottomEdgeExpanded(!bottomEdgeExpanded);
   };
@@ -268,8 +278,8 @@ const ChartNode = ({
           </>
         )}
         {collapsible &&
-          datasource.relationship &&
-          datasource.relationship.charAt(0) === "1" && (
+        datasource.relationship &&
+        datasource.relationship.charAt(0) !== "0" && (
             <i
               className={`oc-edge verticalEdge topEdge oci ${
                 topEdgeExpanded === undefined
@@ -281,59 +291,92 @@ const ChartNode = ({
               onClick={topEdgeClickHandler}
             />
           )}
-        {/*{collapsible &&*/}
-        {/*  datasource.relationship &&*/}
-        {/*  datasource.relationship.charAt(1) === "1" && (*/}
-        {/*    <>*/}
-        {/*      <i*/}
-        {/*        className={`oc-edge horizontalEdge rightEdge oci ${*/}
-        {/*          rightEdgeExpanded === undefined*/}
-        {/*            ? ""*/}
-        {/*            : rightEdgeExpanded*/}
-        {/*            ? "oci-chevron-left"*/}
-        {/*            : "oci-chevron-right"*/}
-        {/*        }`}*/}
-        {/*        onClick={hEdgeClickHandler}*/}
-        {/*      />*/}
-        {/*      <i*/}
-        {/*        className={`oc-edge horizontalEdge leftEdge oci ${*/}
-        {/*          leftEdgeExpanded === undefined*/}
-        {/*            ? ""*/}
-        {/*            : leftEdgeExpanded*/}
-        {/*            ? "oci-chevron-right"*/}
-        {/*            : "oci-chevron-left"*/}
-        {/*        }`}*/}
-        {/*        onClick={hEdgeClickHandler}*/}
-        {/*      />*/}
-        {/*    </>*/}
-        {/*  )}*/}
-        {collapsible &&
+        {/*{collapsible &&
           datasource.relationship &&
-          datasource.relationship.charAt(2) === "1" && (
+          datasource.relationship.charAt(1) === "1" && (
+            <>
+              <i
+                className={`oc-edge horizontalEdge rightEdge oci ${
+                  rightEdgeExpanded === undefined
+                    ? ""
+                    : rightEdgeExpanded
+                    ? "oci-chevron-left"
+                    : "oci-chevron-right"
+                }`}
+                onClick={hEdgeClickHandler}
+              />
+              <i
+                className={`oc-edge horizontalEdge leftEdge oci ${
+                  leftEdgeExpanded === undefined
+                    ? ""
+                    : leftEdgeExpanded
+                    ? "oci-chevron-right"
+                    : "oci-chevron-left"
+                }`}
+                onClick={hEdgeClickHandler}
+              />
+            </>
+          )}*/}
+        {collapsible &&
+        datasource.relationship &&
+        datasource.relationship.charAt(2) === "1" && (
             <i
               className={"material-icons"}
               onClick={bottomEdgeClickHandler}
             >arrow_circle_down</i>
           )}
       </div>
-      {datasource.children && datasource.children.length > 0 && (
-        <ul className={isChildrenCollapsed || (parseInt(datasource.relationship.charAt(0)) > 0) ? "hidden" : ""} style={{border: "solid 1px red"}}>
-          {datasource.children.map(node => (
-            <ChartNode
-                className={className}
-                datasource={node}
-                NodeTemplate={NodeTemplate}
-                id={node.id}
-                key={node.id}
-                draggable={draggable}
-                collapsible={collapsible}
-                multipleSelect={multipleSelect}
-                changeHierarchy={changeHierarchy}
-                onClickNode={onClickNode}
-            />
-        ))}
-        </ul>
-      )}
+      <div style={{display: 'flex'}}>
+        {
+          datasource.expandedChildren && datasource.expandedChildren.length > 0 && (
+              <div id={"expandedChildren"}>
+                <ul>
+                  {
+                    datasource.expandedChildren.map( node => (
+                        <ChartNode
+                            className={className}
+                            datasource={node}
+                            NodeTemplate={NodeTemplate}
+                            id={node.id}
+                            key={node.id}
+                            draggable={draggable}
+                            collapsible={collapsible}
+                            multipleSelect={multipleSelect}
+                            changeHierarchy={changeHierarchy}
+                            onCollapseExpandChildren={handleCollapse}
+                            onClickNode={onClickNode}
+                        />
+                      )
+                    )
+                  }
+                </ul>
+              </div>
+          )
+        }
+        {
+          datasource.children && datasource.children.length > 0 && (
+            <div>
+              <ul className={isChildrenCollapsed  ? "hidden" : ""} style={{borderTop: "solid 1px red", borderRadius: '10px'}}>
+                {datasource.children.map(node => (
+                    <ChartNode
+                        className={className}
+                        datasource={node}
+                        NodeTemplate={NodeTemplate}
+                        id={node.id}
+                        key={node.id}
+                        draggable={draggable}
+                        collapsible={collapsible}
+                        multipleSelect={multipleSelect}
+                        changeHierarchy={changeHierarchy}
+                        onCollapseExpandChildren={handleCollapse}
+                        onClickNode={onClickNode}
+                    />
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </div>
     </li>
   );
 };
