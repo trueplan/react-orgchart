@@ -76,7 +76,7 @@ const ChartContainer = forwardRef(
         const [dataURL, setDataURL] = useState("");
         const [download, setDownload] = useState("");
 
-
+        // todo add description of what this function does
         const attachRel = (data, flags) => {
             data.relationship =
                 flags + (data.children && data.children.length > 0 ? 1 : 0);

@@ -41,6 +41,31 @@ const ChartNode = ({
     const [allowedDrop, setAllowedDrop] = useState(false);
     const [selected, setSelected] = useState(false);
 
+    // State to manage the collapse and expand children
+    const [children, setChildren] = useState([]);
+    const [expanded, setExpandedChildren] = useState([]);
+
+    useEffect(() => {
+        if(datasource) collapseLevel(1);
+
+        if(datasource.children) {
+            // set the children to the stat
+            setChildren(datasource.children);
+            // reset the expanded children
+            setExpandedChildren([]);
+
+        }
+    },[datasource]);
+
+    /*
+    * Collapse an specific children level
+    * It sets the isChildrenCollapsed state to true of all nodes of the level given
+    * */
+    const collapseLevel = (level) => {
+        const currentNodeLevel = datasource?.relationship?.charAt(0);
+        if(currentNodeLevel && (parseInt(currentNodeLevel) === level)) setIsChildrenCollapsed(true);
+    };
+
     const nodeClass = [
         className,
         isChildrenCollapsed ? "isChildrenCollapsed" : "",
@@ -90,7 +115,6 @@ const ChartNode = ({
 
     const handleCollapse = (
         (receivedData) => {
-            debugger
             // todo acá está la magia.
             /*
             La idea es detectar si "receivedData" o fue colapsado o expandido (si está dentro o fuera de "children)
@@ -166,7 +190,7 @@ const ChartNode = ({
 
     const bottomEdgeClickHandler = e => {
         e.stopPropagation();
-        onCollapseExpandChildren(datasource)
+        onCollapseExpandChildren(datasource);
         setIsChildrenCollapsed(!isChildrenCollapsed);
         setBottomEdgeExpanded(!bottomEdgeExpanded);
     };
@@ -359,11 +383,11 @@ const ChartNode = ({
                     )
                 }
                 {
-                    datasource.children && datasource.children.length > 0 && (
+                    children && children.length > 0 && (
                         <div>
                             <ul className={isChildrenCollapsed ? "hidden" : ""}
                                 style={{borderTop: "solid 1px red", borderRadius: '10px'}}>
-                                {datasource.children.map(node => (
+                                {children.map(node => (
                                     <ChartNode
                                         className={className}
                                         datasource={node}
