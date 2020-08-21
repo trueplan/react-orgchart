@@ -43,7 +43,7 @@ const ChartNode = ({
 
     // State to manage the collapse and expand children
     const [children, setChildren] = useState([]);
-    const [expanded, setExpandedChildren] = useState([]);
+    const [expandedChildren, setExpandedChildren] = useState([]);
 
     useEffect(() => {
         if(datasource) collapseLevel(1);
@@ -113,17 +113,26 @@ const ChartNode = ({
         };
     }, [multipleSelect, datasource]);
 
-    const handleCollapse = (
+    const handleExpandCollapse = (
         (receivedData) => {
-            // todo acá está la magia.
-            /*
-            La idea es detectar si "receivedData" o fue colapsado o expandido (si está dentro o fuera de "children)
-            y si fue expandido, meterlo dentro de una prop "expandedChildren" si fue colapsado meterlo de nuevo en children
-            */
-            console.log("data", datasource)
-            console.log("data", receivedData)
+            // check if the node is already expanded
+            const isNodeExpanded = expandedChildren.filter(children => children.id === receivedData.id).length > 0;
+
+            // if the node is already expanded send it back to the group and take it out of the expanded children
+            if(isNodeExpanded) {
+                setChildren([...children, receivedData]);
+                const filteredExpandedChildren = [...expandedChildren].filter(child => child.id !== receivedData.id);
+                setExpandedChildren(filteredExpandedChildren)
+
+            }
+            // else send the node to the expanded children and take it out of the group
+            else {
+                const filteredChildren = [...children].filter(child => child.id !== receivedData.id);
+                setChildren(filteredChildren);
+                setExpandedChildren([...expandedChildren, receivedData])
+            }
         }
-    )
+    );
 
     const addArrows = e => {
         const node = e.target.closest("li");
@@ -357,11 +366,11 @@ const ChartNode = ({
             </div>
             <div style={{display: 'flex'}}>
                 {
-                    datasource.expandedChildren && datasource.expandedChildren.length > 0 && (
+                    expandedChildren && expandedChildren.length > 0 && (
                         <div id={"expandedChildren"}>
                             <ul>
                                 {
-                                    datasource.expandedChildren.map(node => (
+                                    expandedChildren.map(node => (
                                             <ChartNode
                                                 className={className}
                                                 datasource={node}
@@ -372,7 +381,7 @@ const ChartNode = ({
                                                 collapsible={collapsible}
                                                 multipleSelect={multipleSelect}
                                                 changeHierarchy={changeHierarchy}
-                                                onCollapseExpandChildren={handleCollapse}
+                                                onCollapseExpandChildren={handleExpandCollapse}
                                                 onClickNode={onClickNode}
                                             />
                                         )
@@ -398,7 +407,7 @@ const ChartNode = ({
                                         collapsible={collapsible}
                                         multipleSelect={multipleSelect}
                                         changeHierarchy={changeHierarchy}
-                                        onCollapseExpandChildren={handleCollapse}
+                                        onCollapseExpandChildren={handleExpandCollapse}
                                         onClickNode={onClickNode}
                                     />
                                 ))}
