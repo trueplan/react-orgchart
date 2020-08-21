@@ -91,6 +91,11 @@ const ChartNode = ({
   const handleCollapse = (
       (receivedData) => {
         debugger
+        // todo acá está la magia.
+        /*
+        La idea es detectar si "receivedData" o fue colapsado o expandido (si está dentro o fuera de "children)
+        y si fue expandido, meterlo dentro de una prop "expandedChildren" si fue colapsado meterlo de nuevo en children
+        */
         console.log("data", datasource)
         console.log("data", receivedData)
       }
